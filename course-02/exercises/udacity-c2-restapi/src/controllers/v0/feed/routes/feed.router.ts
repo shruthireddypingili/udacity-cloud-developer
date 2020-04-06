@@ -26,11 +26,21 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // update a specific resource
-router.patch('/:id', 
+router.patch('/:resourceId', 
     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+        const { resourceId } = req.params;
+        const updateObject = req.body;
+
+        const result = await FeedItem.update(updateObject, { where: { id: resourceId } });
+
+        if (result) {
+            const updatedResource = await FeedItem.findOne(resourceId);
+            res.status(201).send(updatedResource);
+            return;
+        }
+
+        res.status(500).send("Request to update the a specific resource failed!")
 });
 
 
